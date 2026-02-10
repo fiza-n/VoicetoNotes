@@ -1,13 +1,10 @@
-import { useState } from 'react'
+import VoiceRecorder from "./components/VoiceRecorder";
 
 function App() {
-  
-
   return (
-    <>
-   
-    </>
-  )
+    <VoiceRecorder />
+  );
 }
 
-export default App
+export default App;
+
