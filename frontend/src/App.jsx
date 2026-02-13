@@ -1,11 +1,10 @@
-import TaskDashboard from "./components/TaskDashboard";
-import VoiceRecorder from "./components/VoiceRecorder";
+
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
     <>
-    <VoiceRecorder />
-    <TaskDashboard />
+    <Dashboard />
     </>
   );
 }
