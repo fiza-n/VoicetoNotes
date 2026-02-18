@@ -2,22 +2,22 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import TaskDashboard from "../components/TaskDashboard";  
 import VoiceRecorder from "../components/VoiceRecorder";
+import { fetchUser } from "../services/userService";
 
 export default function Dashboard() {
-  const [user, setUser] = useState([
-    {
-      name: "Arbaz Khan",
-      email: "arbaz@gmail.com"
-    }
-  ]);
+  const [user, setUser] = useState({
+  fname: "Arbaz",
+  lname:"khan",
+  email: "arbaz@gmail.com"
+});
 
-  useEffect(() => {
-    // fetch user info from backend
-    fetch("/api/me")
-      .then(res => res.json())
-      .then(data => setUser(data))
-      .catch(err => console.error(err));
-  }, []);
+
+  
+useEffect(() => {
+  fetchUser()
+    .then(setUser)
+    .catch(console.error);
+}, []);
 
   if (!user) return <div>Loading...</div>;
 

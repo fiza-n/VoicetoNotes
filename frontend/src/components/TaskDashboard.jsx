@@ -17,18 +17,10 @@ export default function TaskDashboard() {
   ]);
    
 
-  // called after voice upload finishes
-  const handleVoiceResponse = async (audioBlob) => {
-    const formData = new FormData();
-    formData.append("audio", audioBlob);
-
-    const res = await axios.post("/api/voice", formData);
-
-    // backend returns something like:
-    // { tasks: [...] }
-
-    setTasks(prev => [...prev, ...res.data.tasks]);
-  };
+ const handleVoiceResponse = async (audioBlob) => {
+  const tasksFromAPI = await processVoice(audioBlob);
+  setTasks(prev => [...prev, ...tasksFromAPI]);
+};
 
   const deleteTask = (id) => {
     setTasks(tasks.filter(t => t.id !== id));

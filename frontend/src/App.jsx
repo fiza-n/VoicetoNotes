@@ -1,14 +1,14 @@
 
-import { Button } from "./components/ui/button";
 import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup" ;  
 
 function App() {
   return (
     <>
     <Dashboard />
-    <Button variant="outline" className="mt-4">
-      Click me
-    </Button>
+    <Login />
+    <Signup />
     </>
   );
 }

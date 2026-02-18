@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import userAnimation from "../assets/children_15689871.gif";
 
 export default function UserProfileDropdown({ user, onLogout }) {
   const [open, setOpen] = useState(false);
@@ -22,19 +23,23 @@ export default function UserProfileDropdown({ user, onLogout }) {
       {/* Avatar button */}
       <button
         onClick={() => setOpen(!open)}
-        className="w-10 h-10 rounded-full bg-gray-700 text-white font-bold"
+        className="w-10 h-10 rounded-full bg-gray-700 text-white font-bold cursor-pointer"
         aria-haspopup="true"
         aria-expanded={open}
         title={user?.name || "User"}
       >
-        {(user && user.name) ? user.name.charAt(0).toUpperCase() : "?"}
+        {<img src = {userAnimation} alt="user account" className="w-10 h-10 rounded-full"/>}
       </button>
 
       {/* Dropdown */}
       {open && (
         <div className="absolute right-0 mt-2 w-56 bg-black text-white rounded-xl shadow-lg p-4">
           <div className="mb-3 border-b border-gray-700 pb-2">
-            <p className="font-bold">{user?.name || "User"}</p>
+            <div className="flex gap-1">
+              <p className="font-bold">{user?.fname || "User"}</p>
+              <p className="font-bold">{user?.lname || "User"}</p>
+            </div>
+            
             <p className="text-sm opacity-70">{user?.email || ""}</p>
           </div>
 

@@ -1,11 +1,9 @@
+import axios from "axios";
 
+export async function processVoice(audioBlob) {
+  const formData = new FormData();
+  formData.append("audio", audioBlob);
 
-import { supabase } from "./supabaseClient";
-
-export const addTask = async (task) => {
-  return await supabase.from("tasks").insert([task]);
-};
-
-export const getTasks = async (userId) => {
-  return await supabase.from("tasks").select("*").eq("user_id", userId);
-};
+  const res = await axios.post("/api/voice", formData);
+  return res.data.tasks;
+}
