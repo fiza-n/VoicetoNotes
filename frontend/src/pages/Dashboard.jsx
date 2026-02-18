@@ -1,30 +1,70 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import TaskDashboard from "../components/TaskDashboard";  
 import VoiceRecorder from "../components/VoiceRecorder";
-import { fetchUser } from "../services/userService";
+import { supabase } from "../lib/supabaseClient";
 
 export default function Dashboard() {
-  const [user, setUser] = useState({
-  fname: "Arbaz",
-  lname:"khan",
-  email: "arbaz@gmail.com"
-});
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const getUser = async () => {
+      // 1️⃣ Get current session
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error(sessionError);
+        return;
+      }
 
-  
-useEffect(() => {
-  fetchUser()
-    .then(setUser)
-    .catch(console.error);
-}, []);
+      if (!sessionData.session) {
+        navigate("/login");
+        return;
+      }
+
+      // 2️⃣ Get user info
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        console.error(userError);
+        return;
+      }
+
+      setUser(userData.user); // object: { id, email, ... }
+    };
+
+    getUser();
+  }, [navigate]);
 
   if (!user) return <div>Loading...</div>;
 
+  const getUserProfile = async () => {
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) {
+    navigate("/login");
+    return;
+  }
+
+  const userId = sessionData.session.user.id;
+
+ const { data: profileData, error } = await supabase
+  .from("profiles")
+  .select("*")
+  .eq("id", user.id) // or session.user.id
+  .single();
+
+setUser(profileData);
+
+};
+
+
   return (
     <div>
-      <Header user={user} onLogout={() => console.log("logout")} />
-        <VoiceRecorder/>
+      <Header user={user} onLogout={async () => {
+        await supabase.auth.signOut();
+        navigate("/login");
+      }} />
+      <VoiceRecorder />
       <TaskDashboard />
     </div>
   );

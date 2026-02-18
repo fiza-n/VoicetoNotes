@@ -1,5 +1,8 @@
 import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
+import {Link} from "react-router-dom";
+import { supabase } from "../lib/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -10,19 +13,49 @@ export default function Signup() {
   });
 
   const handleChange = e => {
-    setForm({ ...form, [e.target.fname]: e.target.value });
-    setForm({ ...form, [e.target.lname]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    console.log("Signup:", form);
-    // connect backend here later
+  
+
+const navigate = useNavigate();
+
+const handleSignup = async (e) => {
+  e.preventDefault();
+  const { email, password, fname, lname } = {
+    email: form.email,
+    password: form.password,
+    fname: form.fname,
+    lname: form.lname
   };
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) return console.error(error.message);
+
+  // Insert into profiles table
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .insert([
+      {
+        id: data.user.id, 
+        first_name: fname,
+        last_name: lname,
+        email
+      }
+    ]);
+
+  if (profileError) console.error(profileError);
+
+  navigate("/dashboard");
+};
 
   return (
     <AuthLayout title="Create Account">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSignup} className="space-y-4">
 
         <input
           name="fname"
@@ -62,10 +95,11 @@ export default function Signup() {
         >
           Signup
         </button>
-
-        <p className="text-center text-sm opacity-70">
+        <Link to="/login"
+        className="text-center text-sm opacity-70 block hover:underline">
           Already have an account? Login
-        </p>
+        
+        </Link>
 
       </form>
     </AuthLayout>
