@@ -31,7 +31,13 @@ const handleSignup = async (e) => {
 
   const { data, error } = await supabase.auth.signUp({
     email,
-    password
+    password,
+    options: {
+      data: {
+        first_name: fname,
+        last_name: lname
+      }
+    }
   });
 
   if (error) return console.error(error.message);

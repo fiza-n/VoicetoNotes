@@ -36,8 +36,8 @@ export default function UserProfileDropdown({ user, onLogout }) {
   <div className="absolute right-0 mt-2 w-56 bg-black text-white rounded-xl shadow-lg p-4">
     <div className="mb-3 border-b border-gray-700 pb-2">
       <div className="flex gap-1">
-        <p className="font-bold">{user?.first_name || "User"}</p>
-        <p className="font-bold">{user?.last_name || "User"}</p>
+        <p className="font-bold">{user?.first_name || user?.user_metadata?.first_name || "User"}</p>
+        <p className="font-bold">{user?.last_name || user?.user_metadata?.last_name || "User"}</p>
       </div>
       <p className="text-sm opacity-70">{user?.email || ""}</p>
     </div>
