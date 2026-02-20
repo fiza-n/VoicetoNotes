@@ -1,13 +1,9 @@
 import { useRef, useState } from "react";
-import axios from "axios";
-
-
 import microphone from "../assets/microphone.svg";
 
-export default function VoiceRecorder() {
+export default function VoiceRecorder({ onStop }) {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-
   const analyserRef = useRef(null);
   const animationRef = useRef(null);
   const dataArrayRef = useRef(null);
@@ -39,7 +35,6 @@ export default function VoiceRecorder() {
     dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);
 
     animatePulse();
-
     setRecording(true);
   };
 
@@ -50,7 +45,6 @@ export default function VoiceRecorder() {
     setRecording(false);
   };
 
-  
   const animatePulse = () => {
     const analyser = analyserRef.current;
     const dataArray = dataArrayRef.current;
@@ -61,22 +55,19 @@ export default function VoiceRecorder() {
     for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
 
     const avg = sum / dataArray.length;
-
-
     const volumeScale = 1 + (avg / 255) * 1.5;
 
     setScale(volumeScale);
-
     animationRef.current = requestAnimationFrame(animatePulse);
   };
 
   const sendAudio = async () => {
     const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
 
-    const formData = new FormData();
-    formData.append("audio", blob, "voice.webm");
-
-    await axios.post("/api/voice", formData);
+    // 🚀 Send audio to Dashboard
+    if (onStop) {
+      await onStop(blob);
+    }
   };
 
   return (
@@ -92,13 +83,11 @@ export default function VoiceRecorder() {
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
-
-          
           transform: `scale(${scale})`,
           transition: "transform 0.08s linear",
         }}
       >
-        <img src={microphone} alt="" />
+        <img src={microphone} alt="Mic" style={{ width: 24, height: 24 }} />
       </div>
     </div>
   );
