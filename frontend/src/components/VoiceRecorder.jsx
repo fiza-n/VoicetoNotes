@@ -64,7 +64,7 @@ export default function VoiceRecorder({ onStop }) {
   const sendAudio = async () => {
     const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
 
-    // 🚀 Send audio to Dashboard
+
     if (onStop) {
       await onStop(blob);
     }
